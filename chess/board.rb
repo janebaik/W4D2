@@ -1,4 +1,5 @@
 require_relative "./pieces/piece.rb"
+require "byebug"
 
 
 #note: you testing up move_piece
@@ -6,10 +7,9 @@ require_relative "./pieces/piece.rb"
     #  you changed your inital start pos to not use these methods but once you fix those methods, you should use it 
     #  question: do you call the move piece on the piece class or instances?
         # how do you know if the piece move is valid without finishing the other classes?
-        #  do you need to check if the end position has a piece there already?
-    #  what you know: inital start pos is right 
+        #  do you need to check if the end position has a piece there already? 
 
-
+class InputError < StandardError; end
 class Board 
 
     def initialize
@@ -20,56 +20,63 @@ class Board
     end
 
     def [](pos)
-        col = pos[0]
-        row = pos[1]
-        board[col][row]
+        # debugger
+        row, col = pos
+        board[row][col]
     end
 
     def []=(pos, val)
-        col = pos[0]
-        row = pos[1]
-        board[col][row] = val 
+        # debugger
+        row, col = pos
+        board[row][col] = val
     end
 
+    # fix this later WHEN YOU CREATE THE PIECE YOU HAVE TO MAKE SURE BOARD IS AN INSTANCE(self)
     def inital_start_pos
         board.each_with_index do |col, index|
             col.each_with_index do |el, inner_index|
-                # pos = [index, inner_index]
+                pos = [index, inner_index]
                 if index == 0 || index == 1
-                    board[index][inner_index] = Piece.new("black", self)
-                    # board[index, inner_index] = Piece.new("black", self)
+                    # board[index][inner_index] = :PB #Piece.new("black", self)
+                    self[pos] = :PB #Piece.new("black", self)
                 elsif index == 6 || index == 7
-                    board[index][inner_index] = Piece.new("white", self)
-                    # board[index, inner_index] = Piece.new("white", self)
+                    # board[index][inner_index] = :PW  #Piece.new("white", self)
+                    self[pos] = :PW  #Piece.new("white", self)
 
                 end
-
             end
         end
-        board
     end
 
+    def printed
+        board.each do |row|
+            p row
+        end
+    end
     # update the 2D grid and also the moved piece's position. 
     # You'll want to raise an exception if:
         # there is no piece at start_pos or
         # the piece cannot move to end_pos.
 
-
     def move_piece(start_pos, end_pos)
-        return raise "out of bounds for pos" if !valid_pos?(start_pos) || !valid_pos?(end_pos) #if either are false 
-        return raise "there is no piece in starting position" if board[start_pos] == nil
-        return raise "there is already another piece there" if board[end_pos] != nil
-        
-        board[end_pos] = board[start_pos] 
-
-
+        if !valid_pos?(start_pos) || !valid_pos?(end_pos)
+            return raise InputError.new( "out of bounds") 
+        end
+        return raise InputError.new( "there is no piece in starting position") if self[start_pos] == nil
+        return raise InputError.new( "there is already another piece there") if self[end_pos] != nil
+        piece = self[start_pos] 
+        self[end_pos] = piece
+        self[start_pos] = nil
+        board
     end
 
     def valid_pos?(pos)
-        if board[pos]
-            return false
-        else
-            true
+        col = pos[0]
+        row = pos[1]
+        if col > 7 || col < 0 || row > 7 || row < 0 #if either are false 
+            return false 
+        else 
+            return true 
         end
     end
 
@@ -95,13 +102,17 @@ class Board
     end
 
 
-    private
+    
     attr_reader :board
 
 end
-
+# FIRST TESTING
 board1 = Board.new
-p board1
-board1.move_piece([0,0], [4,4])
+# board1.board
+board1.printed
+board1.move_piece([7,3], [4,4])
+p "   "
+board1.printed
+# //////////////
 
 

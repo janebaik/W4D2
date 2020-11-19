@@ -1,16 +1,10 @@
 class Piece 
-#   a  b  c  d  e  f  g  h  i  j
-# [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 8
-#  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 7
-#  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 6
-#  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 5
-#  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 4
-#  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 3
-#  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 2
-#  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]] 1
 
+    # Your Piece will need to (1) track its position and (2) hold a reference to the Board. 
+
+    # board has to be an instance when you make a instance of piece
     def initialize(color, board, pos=nil)  #took out board because idk what to do with it 
-        @color = :symbol
+        @color = color
         @board = board
         @pos = []
         # Write code for #initialize so we can setup the board with instances of Piece 
@@ -35,6 +29,11 @@ class Piece
     end
 
     def valid_moves
+        # should return an array of places
+        # need subclasses
+    # Classes that include Slideable in particular need the Board so they know to stop sliding when blocked by another piece.
+    #  Don't allow a piece to move into a square already occupied by the same color piece, 
+    # or to move a sliding piece past a piece that blocks it.
     end
 
     def pos=(val)
